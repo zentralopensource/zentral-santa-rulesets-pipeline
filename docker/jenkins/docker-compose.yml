@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  jenkins:
+    build: .
+    ports: 
+      - "8080:8080"
+    networks:
+      jenkins:
+    volumes: 
+     - jenkins:/var/jenkins_home
+     
+networks:
+  jenkins:
+
+volumes: 
+  jenkins:

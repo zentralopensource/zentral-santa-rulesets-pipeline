@@ -33,7 +33,7 @@ The [`Jenkinsfile`](Jenkinsfile) has 2 steps:
 
 ## Push script
 
-The [`scripts/post_rulesets.py`](scripts/post_rulesets.py) python script is used to push all the rulesets present in the `rulesets` folder. It has no external dependencies. (**TODO** we might need the `pyyaml` at one point)
+The [`scripts/post_rulesets.py`](scripts/post_rulesets.py) python script is used to push all the rulesets present in the `rulesets` folder. It has only [one optional dependency](https://pypi.org/project/PyYAML/) to process YAML files.
 
 This script will **automatically set the configuration** in the ruleset. This allows the same rulesets to be applied to the `Testing` or `Default` configurations, in a dry-run or not, depending on the branch or pull request context.
 

@@ -8,6 +8,12 @@ import json
 import sys
 from urllib.error import HTTPError
 from urllib.request import urlopen, Request
+import warnings
+try:
+    import yaml
+except ImportError:
+    warnings.warn("YAML module not available")
+    yaml = None
 
 
 def get_api_token():
@@ -21,13 +27,25 @@ def iter_files(rootdir):
     for dirpath, _, filenames in os.walk(rootdir):
         for filename in filenames:
             _, extension = os.path.splitext(filename)
-            if extension in (".json",):
+            if extension in (".json", ".yaml", ".yml"):
                 yield os.path.join(dirpath, filename)
 
 
-def post_file(filepath, url, token, configuration):
+def load_file(filepath):
+    opener_list = [json.load]
+    if yaml:
+        opener_list.append(yaml.safe_load)
     with open(filepath, "r") as f:
-        ruleset = json.load(f)
+        for opener in opener_list:
+            try:
+                return opener(f)
+            except Exception:
+                f.seek(0)
+    raise ValueError(f"Could not parse file '{filepath}'")
+
+
+def post_file(filepath, url, token, configuration):
+    ruleset = load_file(filepath)
     ruleset["configurations"] = [configuration]
     req = Request(
         url,
